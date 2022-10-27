@@ -13,32 +13,18 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
-      # - name: Use Node.js
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 16
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - name: Install dependencies
         run: npm install
-      # - name: build-docs
-      #   run: npm run docs:build
-      - name: vuepress
-        uses: jenkey2011/vuepress-deploy@master
-        env:
+      - name: build-docs
+        run: npm run docs:build
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@releases/v3 #crazy-max/ghaction-github-pages@v3
+        with:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          TARGET_REPO: bfclouds/blog
-          TARGET_BRANCH: page
-          BUILD_SCRIPT: npm && npm docs:build
-          BUILD_DIR: docs/.vuepress/dist
-      # - name: Deploy to GitHub Pages
-      #   uses: crazy-max/ghaction-github-pages@v3
-      #   with:
-      #     repo: blog/bfclouds.github.io
-      #     target_branch: pages
-      #     build_dir: $BUILD_DIR
-      #   env:
-      #     ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      #     TARGET_REPO: bfclouds/blog
-      #     TARGET_BRANCH: pages
-      #     BUILD_SCRIPT: npm && npm build
-      #     BUILD_DIR: blog/.vuepress/dist/
+          target_branch: gh-pages
+          build_dir: docs/.vuepress/dist
 
