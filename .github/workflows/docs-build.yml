@@ -19,13 +19,20 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: build-docs
-        run: npm run docs:build
-      - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v3
-        with:
-          repo: blog/bfclouds.github.io
-          target_branch: master-page
-          build_dir: ./docs/.vuepress/dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./github/workflows/blog.sh
+        shell: bash
+      # - name: build-docs
+      #   run: npm run docs:build
+      # - name: Deploy to GitHub Pages
+      #   uses: crazy-max/ghaction-github-pages@v3
+        # with:
+          # repo: blog/bfclouds.github.io
+          # target_branch: master
+          # build_dir: docs/.vuepress/dist
+        # env:
+        #   ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        #   TARGET_REPO: username/repo
+        #   TARGET_BRANCH: master
+        #   BUILD_SCRIPT: npm && npm build
+        #   BUILD_DIR: blog/.vuepress/dist/
 
