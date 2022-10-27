@@ -72,7 +72,7 @@ html5语义化标签、class名；
   ```html
     <picture>
       <source type="image/webp" srcset="xxx.webp">
-      <img class="pic-privilege" width="439" height="438" src="xxx.png" alt="">
+      <img width="439" height="438" src="xxx.png" alt="">
     </picture>
   ```
 
