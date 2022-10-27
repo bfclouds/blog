@@ -46,10 +46,6 @@ export const navbar = [
         text: 'web性能优化总结',
         link: '/summary/performance.md',
       },
-      {
-        text: '第三方接入',
-        link: '/summary/thirdParty.md',
-      },
     ]
   },
 ]

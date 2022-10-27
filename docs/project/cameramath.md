@@ -97,41 +97,58 @@ html5语义化标签、class名；
 
 ### 三方登录-google
 
-控制台注册项目，获取到client id
+[google登录文档](https://developers.google.com/identity/gsi/web/guides/overview)，登录配置流程：
 
-```js
-$.getScript('https://accounts.google.com/gsi/client').done(() => {
-  google.accounts.id.initialize({
-    client_id: $('input[name=google-client-id]').val(),
-    auto_select: true,
-    callback: (response) => {
-      $.ajax({
-        type: 'POST',
-        url: '/api/google-auth',
-        data: $.param({
-          credential: response.credential
-        }),
-        success: () => {
-          sign.utils.redirectToAccountPage();
-        }
-      });
-    },
-  });
-  google.accounts.id.renderButton($('.g_id_signin').get(0), {
-    type: 'standard',
-    theme: 'filled_blue',
-    text: 'Sign in with Google',
-    size: 'large',
-    width: 190,
-    shape: 'rectangular',
-    logo_alignment: 'left'
-  });
-});
-```
+- 导入sdk
+
+  ```html
+    <!-- 方式1: html中导入 -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+  ```
+
+  ```js
+    // 方式2: js中引入
+    $.getScript('https://accounts.google.com/gsi/client').done(() => {
+          google.accounts.id.initialize({
+            client_id: $('input[name=google-client-id]').val(),
+            auto_select: true,
+            callback: (response) => {
+              $.ajax({
+                type: 'POST',
+                url: '/api/google-auth',
+                data: $.param({
+                  credential: response.credential
+                }),
+                success: (res) => {
+                  otherLoginResponseHandler(res);
+                },
+                error: (err) => {
+                  otherLoginErrHandler(err);
+                }
+              });
+            },
+          });
+          google.accounts.id.renderButton($('.g_id_signin').get(0), {
+            type: 'standard',
+            theme: 'filled_blue',
+            text: 'Sign in with Google',
+            size: 'large',
+            width: 190,
+            shape: 'rectangular',
+            logo_alignment: 'left'
+          });
+        });
+  ```
+
+- 在用户点击google登录按钮授权成功后将返回response，response.credential是ID令牌，用于后端进行校验，获取邮箱、id等信息；[response文档](https://developers.google.com/identity/gsi/web/reference/js-reference#credential)
 
 ### 三方登录-facebook
 
-开发者控制台注册项目，获取app id；点击facebook登录按钮的时候，检查当前状态，未登录或未授权则调用FB.login进行登录，将accessToken和userID传到后端验证及处理登录；
+[facebook主页](https://developers.facebook.com/)，进入[控制台](https://developers.facebook.com/apps/?show_reminder=true)选择/创建应用
+
+- Facebook登录->快速启动->web，然后按照提示填入相对应的信息
+- Facebook登录->设置，开启 OAuth网页授权登录、使用JavaScript SDK登录
+- 在页面中引用sdk，首先检查当前登录状态，判断是否已经使用facebook登录，如果是登录状态会直接返回accessToken, userID等信息，否则需要调用FB.login进行登录，最后将accessToken和userID传到后端验证及处理登录；
 
 ```js
 $.getScript('https://connect.facebook.net/en_US/sdk.js').done(() => {
@@ -226,6 +243,9 @@ $.getScript(
 
 创建web site key: [https://www.google.com/recaptcha/admin/create](https://www.google.com/recaptcha/admin/create)
 
+- 在控制台中选择项目并启用 reCAPTCHA Enterprise API
+- 初始化，点击submit按钮开使人机校验
+
 ```js
 window.grecaptchaOnloadCallback = function () {
   $submit.on('click', (e) => {
@@ -268,6 +288,10 @@ window.grecaptchaOnloadCallback = function () {
 ```
 
 ### stripe支付
+
+[api文档](https://stripe.com/docs/api)和[测试文档](https://stripe.com/docs/testing)
+
+在控制台中点击[开发者](https://dashboard.stripe.com/developers)，进入api密钥创建密钥
 
 ```js
 init() {
@@ -337,6 +361,16 @@ async function stripePay() {
   }
 }
 ```
+
+#### stripe测试
+
+[文档](https://stripe.com/docs/testing)
+
+- 成功
+  - 文档：<https://stripe.com/docs/testing#international-cards>
+- 拒绝：
+  - 如：资金不足：4000000000009995
+  - 文档：<https://stripe.com/docs/testing#declined-payments>
 
 ### paypal支付
 
