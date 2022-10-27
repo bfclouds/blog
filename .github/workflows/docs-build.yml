@@ -19,7 +19,8 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: build-docs
-        run: ./github/workflows/blog.sh
+        run: ./.github/workflows/blog.sh
+        
         shell: bash
       # - name: build-docs
       #   run: npm run docs:build
