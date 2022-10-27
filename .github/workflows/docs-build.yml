@@ -22,7 +22,7 @@ jobs:
       # - name: build-docs
       #   run: npm run docs:build
       - name: vuepress
-        uses: bfclouds/blog@master
+        uses: jenkey2011/vuepress-deploy@master
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           TARGET_REPO: bfclouds/blog-page
