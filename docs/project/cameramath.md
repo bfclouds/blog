@@ -8,7 +8,7 @@
 
 ### seo
 
-关键字、标签、schema
+关键字、schema、sitemap、标签
 
 #### 关键字
 
@@ -58,6 +58,37 @@ itemprop用于向搜索引擎提供有关电影的额外信息，itemprop="direc
 </div>
 ```
 
+#### 站点地图 sitemap
+
+[google sitemap文档](https://developers.google.com/search/docs/advanced/sitemaps/build-sitemap?hl=zh-tw)
+
+遍历题库，生成sitmap文件;  
+
+google要求，压缩完的sitmap最大50M，超出50M对sitmap进行拆分，示例：
+
+```xml
+<!-- sitemap.xml -->
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://xxxxx.com/sitemap_111.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://xxxxx.com/sitemap_222.xml</loc>
+  </sitemap>
+</sitemapindex>
+```
+
+```xml
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://xxxxxxx</loc>
+    <image:image>
+      <image:loc>https://xxxxxx</image:loc>
+    </image:image>
+  </url>
+</urlset>
+```
+
 #### 标签
 
 html5语义化标签、class名；  
@@ -67,7 +98,7 @@ html5语义化标签、class名；
 
 - 页面中减少数据库请求，加快响应速度（针对于服务端渲染）
 - 字体包使用woff2，减少字体包体积
-- 图片webp类型体积更小；对图片进行压缩，压缩地址：[https://tinypng.com](https://tinypng.com)  
+- 图片webp类型体积更小；并对图片进行压缩，图片压缩地址：[https://tinypng.com](https://tinypng.com)  
   
   ```html
     <picture>

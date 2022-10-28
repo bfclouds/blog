@@ -12,10 +12,6 @@ export const navbar = [
         link: '/project/liveChat.md',
       },
       {
-        text: 'xvpn官网',
-        link: '/project/xvpnWeb.md',
-      },
-      {
         text: '卡猫商城',
         link: '/project/cardCat.md',
       },
@@ -26,7 +22,7 @@ export const navbar = [
     children: [
       {
         text: 'vue3后台管理系统',
-        link: '/learn/vueCode.md',
+        link: '/myProject/vue3Admin.md',
       },
     ]
   },
@@ -45,6 +41,10 @@ export const navbar = [
       {
         text: 'web性能优化总结',
         link: '/summary/performance.md',
+      },
+      {
+        text: '工具总结',
+        link: '/summary/tools.md',
       },
     ]
   },
