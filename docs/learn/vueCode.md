@@ -233,11 +233,115 @@ const proxyUser = new Proxy(user, {
 
 ```
 
-### 2、分支切换和调度执行
+### 2、分支切换
 
-### 3、watch
+现在有如下代码：
 
-### 4、computed
+```js
+const user = {
+  isShowName: true,
+  name: '付文江',
+  age: 26,
+}
+// ... 省略userProxy部分代码
+
+function effect(fn) {
+  activeEffect = fn
+  fn()
+}
+effect(() => {
+  console.log('我被执行了!')
+  const val = proxyUser.flag ? proxyUser.name : "阵雨来袭"
+  document.querySelector('#app').innerHTML = `<p>${val}</p>`
+})
+
+setTimeout(() => {
+  proxyUser.flag = false
+}, 2000)
+
+setTimeout(() => {
+  proxyUser.name = "福福福"
+}, 3000)
+
+setTimeout(() => {
+  proxyUser.flag = true
+}, 4000)
+```
+
+在effect中，当flag为true的时候，val的值是name，当flag为false的时候，val的值是“阵雨来袭”，这种因为flag变化而产生的变化就称为分支切换；
+
+当flag的值为false的时候，此时ui显示的是"阵雨来袭"，而后我们修改了name，因为flag为false，所以val的值依然是“阵雨来袭”，所以ui显示“阵雨来袭”，后面我们修改flag的值为true，因此val为name，ui显示name的值；
+
+name的这次修改因为falg为false，所以val的值实际上并没有变化，但是副作用函数被执行了，所以这次副作用函数的执行实际上是没有必要的，或者说它的这次执行是在浪费资源，那么这个副作用存在于name中就是错误的，可以说这个副作用这是上次依赖收集的残留副作用，我们本应该把它清理掉；
+
+因此我们需要将effectFn和代理的key的副作用函数列表（Set）相互关联起来，这样就能知道副作用函数被谁收集了，才能做清理的操作；于是做如下修改:
+
+```js
+
+function track(target, key) {
+  if (!activeEffect) {
+    return
+  }
+  let depsMap = bucket.get(target)
+  if (!depsMap) {
+    bucket.set(target, (depsMap = new Map()))
+  }
+  let deps = depsMap.get(key)
+  if (!deps) {
+    depsMap.set(key, (deps = new Set()))
+  }
+  deps.add(activeEffect)
+  activeEffect.deps.push(deps) // 新增
+}
+
+function effect(fn) {
+  // 修改
+  function effectFn() { 
+    activeEffect = fn
+    fn()
+  }
+  effectFn.deps = []
+  effectFn()
+}
+effect(() => {
+  console.log('我被执行了!')
+  const val = proxyUser.flag ? proxyUser.name : "阵雨来袭"
+  document.querySelector('#app').innerHTML = `<p>${val}</p>`
+})
+
+```
+
+在effect中，我们给effectFn加上deps（deps是用来存储这个副作用在哪些响应式数据的依赖集合中），此时deps为空；在track中effectFn被添加到了Set中，作为了对应key的副作用函数，那么此时我们将Set添加到effectFn的deps中，这样就实现了effectFn和被代理key收集的依赖之间的关联（此时代理key的Set中有effectFn，effectFn的deps中有Set）；
+
+接下来需要在effectFn执行的时候清除掉Set中的effectFn
+
+```js
+function effect(fn) {
+  function effectFn() {
+    cleanEffect(effectFn) // 新增
+    activeEffect = fn
+    fn()
+  }
+  effectFn.deps = []
+  effectFn()
+}
+
+function cleanEffect(effectFn) {
+   for (let i = 0; i < effectFn.deps.length; i++) {
+    const deps = effectFn.deps[i];
+    deps.delete(effectFn)
+  }
+  effectFn.deps.length = 0
+}
+```
+
+这样就实现了在effectFn执行的时候先清除掉了所有包含effectFn的Set中的effectFn，然后再重新做依赖收集，那么就不会有残留的副作用函数了，此时执行代码，当falg为false后，再改变name将不会执行副作用函数；
+
+### 执行调度
+
+### 4、watch
+
+### 5、computed
 
 ## 渲染器
 
