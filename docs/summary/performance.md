@@ -2,12 +2,14 @@
 
 ## 图片
 
-  webp的图片本身体积更小，同时压缩效果也比其他的好，因此使用webp格式的图片，再通过source解决有的浏览器不兼容的问题；
+  webp的图片本身体积更小，同时压缩效果也比其他的好，因此使用webp格式的图片，再通过source解决有的浏览器不兼容的问题(不过现在浏览器大部分已经支持了现代图片格式，可以在网页中直接使用webp)；
 
   ```html
   <picture>
     <source type="image/webp" srcset="xxx.webp">
     <source type="image/webp" srcset="xxx_mobile.webp" media="(max-width: 767px)">
+    <source type="image/png" srcset="xxx.png">
+    <source type="image/png" srcset="xxx_mobile.png" media="(max-width: 767px)">
     <img width="439" height="438" src="xxx.png" alt="">
   </picture>
   ```

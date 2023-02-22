@@ -27,3 +27,26 @@ css相关：
 ## 其他
 
 * 免费静态站点发布网站: [https://surge.sh/](https://surge.sh/)
+
+## 效率工具
+
+### itemr2命令提示
+
+[zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
+
+```sh
+cd ~/.oh-my-zsh/plugins/
+git clone https://github.com/zsh-users/zsh-autosuggestions
+```
+
+配置，编辑文件 ~/.zshrc
+
+```sh
+plugins=(
+  git zsh-autosuggestions
+)
+```
+
+```sh
+source ~/.zshrc
+```
